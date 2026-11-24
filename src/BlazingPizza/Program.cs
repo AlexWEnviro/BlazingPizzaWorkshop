@@ -1,5 +1,6 @@
 global using BlazingPizza.Shared;
 global using BlazingPizza;
+using BlazingPizza.Application;
 using BlazingPizza.Client;
 using BlazingPizza.Components;
 using BlazingPizza.Components.Account;
@@ -41,6 +42,7 @@ builder.Services.AddIdentityCore<PizzaStoreUser>(options => options.SignIn.Requi
 builder.Services.AddSingleton<IEmailSender<PizzaStoreUser>, IdentityNoOpEmailSender>();
 
 
+builder.Services.AddPizzaApplication();
 builder.Services.AddScoped<IRepository, EfRepository>();
 builder.Services.AddScoped<OrderState>();
 
@@ -74,7 +76,9 @@ else
 
 app.UseHttpsRedirection();
 
-app.UseStaticFiles();
+//app.UseStaticFiles();
+app.MapStaticAssets();
+
 app.UseAntiforgery();
 
 app.MapPizzaApi();
