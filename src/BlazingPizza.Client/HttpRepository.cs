@@ -11,24 +11,16 @@ public class HttpRepository : IRepository
 		_httpClient = httpClient;
 	}
 
-	public Task<List<OrderWithStatus>> GetOrdersAsync()
+	public async Task<List<OrderWithStatus>> GetOrdersAsync()
 	{
-		throw new NotImplementedException();
+		return await _httpClient.GetFromJsonAsync<List<OrderWithStatus>>("orders") ?? new();
 	}
 
-	public Task<List<OrderWithStatus>> GetOrdersAsync(string userId)
+	public async Task<OrderWithStatus> GetOrderWithStatus(int orderId)
 	{
-		throw new NotImplementedException();
-	}
-
-	public Task<OrderWithStatus> GetOrderWithStatus(int orderId)	
-	{
-		throw new NotImplementedException();
-	}
-
-	public Task<OrderWithStatus> GetOrderWithStatus(int orderId, string userId)
-	{
-		throw new NotImplementedException();
+		var order = await _httpClient.GetFromJsonAsync<OrderWithStatus>($"orders/{orderId}");
+		if (order is null) throw new ArgumentNullException(nameof(order));
+		return order;
 	}
 
 	public async Task<List<PizzaSpecial>> GetSpecials()

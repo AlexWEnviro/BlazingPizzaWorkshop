@@ -1,6 +1,6 @@
 ﻿@page "/myorders"
 @using Microsoft.AspNetCore.Authorization
-@using System.Security.Claims
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 @inject IRepository Repository
 @attribute [Authorize]
 
@@ -33,18 +33,8 @@
 	</TemplatedList>
 </div>
 @code {
-	IEnumerable<OrderWithStatus>? ordersWithStatus;
-
-	[CascadingParameter]
-	public HttpContext HttpContext { get; set; } = default!;
-
-
 	async Task<IEnumerable<OrderWithStatus>> LoadOrders()
 	{
-		var ordersWithStatus = Enumerable.Empty<OrderWithStatus>();
-
-		ordersWithStatus = await Repository.GetOrdersAsync(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-		return ordersWithStatus;
+		return await Repository.GetOrdersAsync();
 	}
 }

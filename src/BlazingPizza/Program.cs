@@ -43,8 +43,18 @@ builder.Services.AddSingleton<IEmailSender<PizzaStoreUser>, IdentityNoOpEmailSen
 
 
 builder.Services.AddPizzaApplication();
-builder.Services.AddScoped<IRepository, EfRepository>();
 builder.Services.AddScoped<OrderState>();
+
+// WASM-rendered components are prerendered on the server first. They still need IRepository/HttpClient
+// resolved from *this* container at that point, so give them a loopback client that calls our own API -
+// the server never touches the database directly for these components, same as the browser later does.
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IRepository>(sp =>
+{
+	var request = sp.GetRequiredService<IHttpContextAccessor>().HttpContext!.Request;
+	var httpClient = new HttpClient { BaseAddress = new Uri($"{request.Scheme}://{request.Host}") };
+	return new HttpRepository(httpClient);
+});
 
 builder.Services.AddControllers();
 

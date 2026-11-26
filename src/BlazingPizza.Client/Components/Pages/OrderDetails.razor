@@ -2,10 +2,9 @@
 
 @using System.Threading
 @using Microsoft.AspNetCore.Authorization
-@using System.Security.Claims
 @attribute [Authorize]
 @implements IDisposable
-@rendermode InteractiveServer
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 @inject IRepository Repository
 
 <div class="main">
@@ -46,14 +45,11 @@
 @code {
 	[Parameter] public int OrderId { get; set; }
 
-	[CascadingParameter]
-	public HttpContext HttpContext { get; set;} = default!; 
-
 	OrderWithStatus? orderWithStatus;
 	bool invalidOrder;
 	CancellationTokenSource? pollingCancellationToken;
 
-	private Task pollingTask;
+	private Task? pollingTask;
 
 	protected override async Task OnParametersSetAsync()
 	{

@@ -7,13 +7,11 @@ public interface IRepository
 
 	Task<List<PizzaSpecial>> GetSpecials();
 
+	/// <summary>Orders placed by the current signed-in user. Scoping is enforced server-side.</summary>
 	Task<List<OrderWithStatus>> GetOrdersAsync();
 
-	Task<List<OrderWithStatus>> GetOrdersAsync(string userId);
-
+	/// <summary>An order belonging to the current signed-in user. Scoping is enforced server-side.</summary>
 	Task<OrderWithStatus> GetOrderWithStatus(int orderId);
-
-	Task<OrderWithStatus> GetOrderWithStatus(int orderId, string userId);
 
 	Task<int> PlaceOrder(Order order);
 
